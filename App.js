@@ -1,21 +1,51 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, Button, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function App() {
+import {css} from './assets/css/styles';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import {Home, Login, Rastreio} from './views';
+import AreaRestrita from './views/AreaRestrita/AreaRestrita';
+
+const App = () => {
+
+  const Stack = createStackNavigator();
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen 
+            name="Home"
+            component={Home}
+            options={{
+              title:"Bem-Vindo",
+              headerStyle:{backgroundColor:"#F58634"},
+              headerTintColor:'#333',
+              headerTitleStyle:{fontWeight:'bold', alignSelf:'center'}
+            }}
+          />
+          <Stack.Screen 
+            name="Login" 
+            component={Login} 
+            options={{
+              headerShown:false
+            }}
+          />
+          <Stack.Screen name="Rastreio" component={Rastreio} />
+          <Stack.Screen 
+            name="AreaRestrita" 
+            component={AreaRestrita} 
+            options={{
+              headerShown:false
+            }}
+          />
+        </Stack.Navigator>
+    </NavigationContainer>
   );
+
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
