@@ -3,12 +3,14 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const models = require('./models');
 const { response } = require('express');
+const QRCode = require('qrcode');
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.static('assets'));
 
 let user = models.User;
 let tracking = models.Tracking;
@@ -46,6 +48,7 @@ app.post('/verifyPassword', async (req,res) => {
 
 // Criar o produto na DB
 app.post('/create', async (req, res) => {
+    let trackingId = '';
     await tracking.create({
         userId: req.body.user,
         code: req.body.code,
@@ -58,6 +61,14 @@ app.post('/create', async (req, res) => {
         trackingId: trackingId,
         name: req.body.product
     });
+
+    QRCode.toDataURL(req.body.code).then(url => {
+        QRCode.toFile(
+            './assets/img/code.png',
+            req.body.code
+        );
+        res.send(JSON.stringify(url));
+    })
 });
 
 let port = process.env.PORT || 3000;
